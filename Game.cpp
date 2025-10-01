@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -11,11 +13,14 @@ void gameOver();
 void saveGame(int room);
 int loadGame();
 void resetGame();
+void enemy();
 
 int main() {
+    srand(time(0)); //Start of Random Number Generator
+
 //Game Start
-    cout << "Labyrinth" << endl;
-    cout << "Veins of the Earth" << endl;
+    cout << "\033[31mLabyrinth\033[0m" << endl;
+    cout << "\033[34mVeins of the Earth\033[0m" << endl;
 
     int choice;
     cout << "\n1. New Game\n2. Load Game";
@@ -75,6 +80,7 @@ void exploreRoom(int room) {
     cout << "\nYou are in the hallway.\n";
     cout << "1. Enter the door.\n";
     cout << "2. Go back.\n";
+    cout << "3. Enemy crab?\n";
     cout << "Your choice: ";
     cin >> choice;
 
@@ -84,6 +90,8 @@ void exploreRoom(int room) {
     } else if (choice == "2") {
         cout << "\nYou are back where you started.\n";
         startGame();
+    } else if (choice == "3") {
+        enemy();
     }
 }
 
@@ -99,6 +107,7 @@ void gameOver() {
     }
 }
 
+//Save System
 void saveGame(int room) {
     ofstream saveFile("save.txt");
     if (saveFile.is_open()) {
@@ -123,4 +132,43 @@ void resetGame() {
     ofstream saveFile("save.txt", ios::trunc); // clear file
     saveFile.close();
     cout << "\nSave reset!\n";
+}
+
+//Fighting Mechanic
+void enemy() {
+    int enemyHealth = rand() % 16 + 5; //Enemy heath 5-20
+    int playerHealth = 20;
+
+    cout << "\nAn adversary appears with " << enemyHealth << " HP\n";
+
+    while (enemyHealth > 0 && playerHealth > 0) {
+        cout << "\nYour HP: " << playerHealth << " | Enemy HP: " << enemyHealth;
+        cout << "\n1. Attack\n2. Run\nChoice : ";
+        string action;
+        cin >> action;
+
+        if (action == "1") {
+            int playerDamage = rand() % 6 + 1;
+            int enemyDamage = rand() % 6 + 1;
+            cout << "\nYou hit the enemy for " << playerDamage << " damage!";
+            enemyHealth -= playerDamage;
+
+            if (enemyHealth > 0) {
+                cout << "\033[31m\nThe attacks for\033[0m " << enemyDamage << " damage!";
+                playerHealth -= enemyDamage;
+            }
+        } else if (action == "2") {
+            cout << "\nYou have fled the fight!\n";
+            return;
+        } else {
+            cout << "\nYou failed to escape!\n";
+        }
+    }
+
+        if (playerHealth <= 0) {
+            cout << "\nYou have parished...\n";
+            gameOver();
+        } else {
+            cout << "\nYou have won this fight!\n";
+        }
 }
