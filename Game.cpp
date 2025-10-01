@@ -80,7 +80,7 @@ void exploreRoom(int room) {
 
     if (choice == "1") {
         cout << "\nYou enter the door. To your left is a chest, and to the right a skeleton.\n";
-        saveGame(room); // still save progress
+        saveGame(room); //save progress
     } else if (choice == "2") {
         cout << "\nYou are back where you started.\n";
         startGame();
